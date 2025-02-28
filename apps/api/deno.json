@@ -2,6 +2,7 @@
   "tasks": {
     "dev": "deno run --allow-net --allow-env --allow-read  --watch main.ts"
   },
+  "nodeModulesDir": "auto",
   "imports": {
     "@luca/cases": "jsr:@luca/cases@^1.0.0",
     "@neondatabase/serverless": "npm:@neondatabase/serverless@^0.10.4",

@@ -17,3 +17,5 @@ db/*.sqlite-journal
 
 # Pliki kompilacji i cache Deno
 deno.cache/
+
+.turbo
