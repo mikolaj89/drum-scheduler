@@ -5,6 +5,8 @@ import { and, eq } from "drizzle-orm";
 export type SessionExercise = typeof sessionexercisesSchema.$inferSelect;
 export type SessionExerciseInput = typeof sessionexercisesSchema.$inferInsert;
 
+
+
 export async function getSessionExercises(sessionId: number) {
   return await db
     .select({
@@ -13,9 +15,15 @@ export async function getSessionExercises(sessionId: number) {
       bpm: exercisesSchema.bpm,
       durationMinutes: exercisesSchema.durationMinutes,
       description: exercisesSchema.description,
+      createdAt: exercisesSchema.createdAt,
+      mp3Url: exercisesSchema.mp3Url,
+      categoryId: exercisesSchema.categoryId,
     })
     .from(sessionexercisesSchema)
-    .innerJoin(exercisesSchema, eq(sessionexercisesSchema.exerciseId, exercisesSchema.id))
+    .innerJoin(
+      exercisesSchema,
+      eq(sessionexercisesSchema.exerciseId, exercisesSchema.id)
+    )
     .where(eq(sessionexercisesSchema.sessionId, sessionId));
 }
 
@@ -27,13 +35,16 @@ export const addSessionExercise = async (
 
 // delete sessionExercise
 
-export const deleteSessionExercise = async (sessionId: number, exerciseId: number) => {
-    return await db
-      .delete(sessionexercisesSchema)
-      .where(
-        and(
-          eq(sessionexercisesSchema.sessionId, sessionId),
-          eq(sessionexercisesSchema.exerciseId, exerciseId)
-        )
-      );
-  };
+export const deleteSessionExercise = async (
+  sessionId: number,
+  exerciseId: number
+) => {
+  return await db
+    .delete(sessionexercisesSchema)
+    .where(
+      and(
+        eq(sessionexercisesSchema.sessionId, sessionId),
+        eq(sessionexercisesSchema.exerciseId, exerciseId)
+      )
+    );
+};

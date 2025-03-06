@@ -10,6 +10,8 @@ import {
 } from "./schema.ts";
 import { categoriesRelations, exercisesRelations } from "./relations.ts";
 
+exercisesSchema.$inferSelect
+
 const env = await load();
 const { Pool } = pg;
 

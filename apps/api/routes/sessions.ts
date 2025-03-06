@@ -11,21 +11,24 @@ import {
   getSessionExercises,
   deleteSessionExercise,
 } from "../db/sessionExercises.ts";
+import { getFormattedSession } from "../utils/session.ts";
 
 const router = new Router();
 
 // below is the router for sessions
+
 
 export default router
   // Fetch all sessions
   .get("/sessions", async (context) => {
     try {
       const result = await getSessions();
-      context.response.body = result;
+      context.response.status = 200;
+      context.response.body = { data: result };
     } catch (error) {
       console.error("Error fetching sessions:", error);
       context.response.status = 500;
-      context.response.body = { error: "Failed to fetch sessions" };
+      context.response.body = {data: null,  error: "Failed to fetch sessions" };
     }
   })
   // get single session by id
@@ -34,16 +37,20 @@ export default router
     try {
       const id = params.id;
       const result = await getSession(parseInt(id));
-      if (result) {
-        response.body = result;
-      } else {
+      if (result.length === 0) {
         response.status = 404;
-        response.body = { error: "Session not found" };
+        response.body = {data: null, error: "Session not found" };
+       
+      } else {
+        const exercises = await getSessionExercises(parseInt(id));
+        const sessionWithExercises =  getFormattedSession(result[0], exercises);
+        response.status = 200;
+        response.body = {data: sessionWithExercises};
       }
     } catch (error) {
       console.error("Error fetching session:", error);
       response.status = 500;
-      response.body = { error: "Failed to fetch session" };
+      response.body = {data: null, error: "Failed to fetch session" };
     }
   })
   // Add a new session
@@ -155,4 +162,9 @@ export default router
       response.body = { error: "Failed to delete session exercise" };
     }
   });
+
+  router.all("(.*)", (context) => {
+  context.response.status = 404;
+  context.response.body = {data: null, success: false, error: "Endpoint not found" };
+});
 

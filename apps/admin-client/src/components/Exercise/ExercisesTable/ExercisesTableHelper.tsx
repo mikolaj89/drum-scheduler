@@ -1,0 +1,71 @@
+import { GridColDef } from "@mui/x-data-grid";
+import { Exercise } from "../../../../../api/db/exercises";
+import { Button } from "@mui/material";
+
+type ExercisesColumns = {
+  onDelete: (id: number) => void;
+};
+
+export const getExercisesColumns = ({
+  onDelete,
+}: ExercisesColumns): GridColDef<Exercise[][number]>[] => [
+  { // placeholder for absolutely positioned drag handle. 
+  // I wasn't able to find an easy way to put handle here, while still keeping useSortable on row level
+  // (where it's intended to be used)
+  
+    field: "up/down",
+    headerName: "",
+    width: 40,
+    editable: false,
+  },
+  {
+    field: "name",
+    headerName: "Name",
+    width: 150,
+    editable: false,
+    
+  },
+  {
+    field: "description",
+    headerName: "Description",
+
+    width: 400,
+    editable: false,
+  },
+  {
+    field: "durationMinutes",
+    headerName: "Duration (minutes)",
+    type: "number",
+    width: 150,
+
+    editable: false,
+  },
+  {
+    field: "bpm",
+    headerName: "BPM",
+    type: "number",
+    flex: 1,
+    editable: false,
+  },
+  {
+    field: "actions",
+    headerName: "Actions",
+    type: "number",
+    flex: 1,
+    editable: false,
+    renderCell: (params) => (
+      <Button
+        variant="contained"
+        color="secondary"
+        type="button"
+        size="small"
+        onClick={() => {
+          debugger;
+          onDelete(params.row.id)
+        } }
+      >
+        Delete
+      </Button>
+    ),
+  },
+];
