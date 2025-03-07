@@ -1,12 +1,13 @@
-import { fetchSession, fetchSessions } from "@/utils/sessions-api";
+import { fetchSession } from "@/utils/sessions-api";
 import { SessionDetails } from "@/components/Session/SessionDetails";
+import { Box } from "@mui/material";
 
 export default async function Page({ params }) {
   const { sessionId } =  params;
   const { data, error } = await fetchSession(sessionId as string);
 
   if (data === null) {
-    return <div>Error: {error?.message}</div>;
+    return <Box>Error: {error?.message}</Box>;
   }
 
   console.log({ data, error });

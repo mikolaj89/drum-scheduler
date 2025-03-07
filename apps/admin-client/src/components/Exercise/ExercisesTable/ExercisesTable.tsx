@@ -6,17 +6,17 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent
+  DragEndEvent,
 } from "@dnd-kit/core";
 import {
   restrictToVerticalAxis,
   restrictToWindowEdges,
-  restrictToParentElement
+  restrictToParentElement,
 } from "@dnd-kit/modifiers";
 import {
   arrayMove,
   SortableContext,
-  verticalListSortingStrategy
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
 import DraggableGridRow from "./DraggableRow";
@@ -29,26 +29,23 @@ type ExercisesTableProps = {
   onChange: (rows: Exercise[]) => void;
 };
 
-const ExercisesTable = memo(({ rows, onChange, columns } : ExercisesTableProps) => {
-  
-  const sensors = useSensors(useSensor(PointerSensor));
-  
+const ExercisesTable = memo(
+  ({ rows, onChange, columns }: ExercisesTableProps) => {
+    const sensors = useSensors(useSensor(PointerSensor));
 
-  
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (over) {
-        const oldIndex = rows.findIndex((rows) => rows.id === active.id);
-        const newIndex = rows.findIndex((rows) => rows.id === over.id);
-        onChange(arrayMove(rows, oldIndex, newIndex));
-      }
-    },
-    [rows, onChange]
-  );
+    const handleDragEnd = useCallback(
+      (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (over) {
+          const oldIndex = rows.findIndex((rows) => rows.id === active.id);
+          const newIndex = rows.findIndex((rows) => rows.id === over.id);
+          onChange(arrayMove(rows, oldIndex, newIndex));
+        }
+      },
+      [rows, onChange]
+    );
 
-  return (
-    
+    return (
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -56,7 +53,7 @@ const ExercisesTable = memo(({ rows, onChange, columns } : ExercisesTableProps) 
         modifiers={[
           restrictToVerticalAxis,
           restrictToWindowEdges,
-          restrictToParentElement
+          restrictToParentElement,
         ]}
         autoScroll={false}
       >
@@ -72,8 +69,8 @@ const ExercisesTable = memo(({ rows, onChange, columns } : ExercisesTableProps) 
           />
         </SortableContext>
       </DndContext>
-    
-  );
-});
+    );
+  }
+);
 
 export default ExercisesTable;

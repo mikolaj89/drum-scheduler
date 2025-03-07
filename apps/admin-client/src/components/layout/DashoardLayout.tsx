@@ -10,20 +10,17 @@ import {
   List,
   ListItem,
   ListItemText,
+  ThemeProvider,
   Toolbar,
   Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
-import styled from "@emotion/styled";
+import theme from "./theme";
 
 const EXPANDED_WIDTH = 240;
 const COLLAPSED_WIDTH = 0; // Width when collapsed
-
-const ContentStyled = styled.div`
-  padding-top: 70px;
-`;
 
 export const DashboardLayout = ({ children }: PropsWithChildren) => {
   const [open, setOpen] = useState(true);
@@ -38,6 +35,7 @@ export const DashboardLayout = ({ children }: PropsWithChildren) => {
   }, [open]);
 
   return (
+    <ThemeProvider theme={theme}>
     <ReactQueryProvider>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -92,9 +90,10 @@ export const DashboardLayout = ({ children }: PropsWithChildren) => {
             </Toolbar>
           </AppBar>
 
-          <ContentStyled>{children}</ContentStyled>
+          <Box sx={{marginTop: 7}}>{children}</Box>
         </Box>
       </Box>
     </ReactQueryProvider>
+    </ThemeProvider>
   );
 };
