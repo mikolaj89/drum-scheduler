@@ -18,6 +18,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
 import theme from "./theme";
+import { NavBar } from "./NavBar";
 
 const EXPANDED_WIDTH = 240;
 const COLLAPSED_WIDTH = 0; // Width when collapsed
@@ -52,18 +53,7 @@ export const DashboardLayout = ({ children }: PropsWithChildren) => {
             },
           }}
         >
-          <List>
-            {["Sessions", "Exercises"].map((text) => (
-              <ListItem
-                sx={{
-                  gap: 1,
-                }}
-                key={text}
-              >
-                <FormatListBulletedIcon /> <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
+          <NavBar/>
         </Drawer>
 
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

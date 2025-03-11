@@ -6,7 +6,10 @@ export type SessionWithExercises = Session & {
   exercises: Exercise[];
 };
 
-// should return a formatted session, which includes total duration base on the exercises it contains
+// should return a formatted session, which includes
+// 1) total duration base on the exercises it contains
+// 2) basic session data
+// 3) exercises
 export const getFormattedSession = (
   session: Session,
   exercises: Exercise[]

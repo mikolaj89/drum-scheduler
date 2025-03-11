@@ -14,7 +14,7 @@ import {
 import { getFormattedSession } from "../utils/session.ts";
 
 const router = new Router();
-
+ 
 // below is the router for sessions
 
 
@@ -161,10 +161,4 @@ export default router
       response.status = 500;
       response.body = { error: "Failed to delete session exercise" };
     }
-  });
-
-  router.all("(.*)", (context) => {
-  context.response.status = 404;
-  context.response.body = {data: null, success: false, error: "Endpoint not found" };
-});
-
+  })

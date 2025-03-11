@@ -2,8 +2,8 @@ import { db } from "./drizzle.ts";
 import { categoriesSchema, exercisesSchema } from "./schema.ts";
 import { eq } from "drizzle-orm";
 
-export type Exercise = typeof categoriesSchema.$inferSelect;
-export type ExerciseInput = typeof categoriesSchema.$inferInsert;
+export type Category = typeof categoriesSchema.$inferSelect;
+export type CategoryInput = typeof categoriesSchema.$inferInsert;
 
 export async function getCategories() {
   return await db.select().from(categoriesSchema);

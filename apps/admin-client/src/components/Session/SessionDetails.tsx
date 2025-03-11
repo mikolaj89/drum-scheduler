@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { SessionWithExercises } from "../../../../api/utils/session";
 import { Exercise } from "../../../../api/db/exercises";
-import ExercisesTable from "../Exercise/ExercisesTable/ExercisesTable";
+import ExercisesTable from "../Exercise/ExercisesTable/SessionExercisesTable";
 import { useCallback, useState } from "react";
-import { getExercisesColumns } from "../Exercise/ExercisesTable/ExercisesTableHelper";
+import { getSessionExercisesColumns } from "../Exercise/ExercisesTable/ExercisesTableHelper";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
 
@@ -36,7 +36,7 @@ export const SessionDetails = ({
     console.log("delete exercise: ", id);
   };
 
-  const columns = getExercisesColumns({ onDelete });
+  const columns = getSessionExercisesColumns({ onDelete });
 
   return (
     <>
@@ -58,6 +58,7 @@ export const SessionDetails = ({
       </Box>
       <Paper>
         <ExercisesTable
+          draggable={true}
           onChange={handleChangeRows}
           rows={rows}
           columns={columns}

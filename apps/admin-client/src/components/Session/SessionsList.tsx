@@ -11,7 +11,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import Link from "next/link";
+import {TableLink} from "../Common/Link";
 
 export const SessionsList = ({
   sessionsData,
@@ -42,7 +42,7 @@ export const SessionsList = ({
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-               <Link href={`/sessions/${row.id}`}> {row.name} </Link>
+               <TableLink href={`/sessions/${row.id}`}> {row.name} </TableLink>
               </TableCell>
               <TableCell align="right">{row.notes}</TableCell>
               <TableCell align="right">{row.createdAt}</TableCell>

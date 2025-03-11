@@ -1,76 +1,53 @@
-import { memo, useCallback } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  restrictToVerticalAxis,
-  restrictToWindowEdges,
-  restrictToParentElement,
-} from "@dnd-kit/modifiers";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-
-import DraggableGridRow from "./DraggableRow";
-import { Exercise } from "../../../../../api/db/exercises";
+"use client";
+import { fetchExercises } from "@/utils/exercises-api";
+import { DataGrid } from "@mui/x-data-grid/DataGrid";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getExercisesColumns } from "./ExercisesTableHelper";
+import { Box, Button, CircularProgress, Skeleton } from "@mui/material";
+import { useEffect, useState } from "react";
 
-type ExercisesTableProps = {
-  rows: Exercise[];
-  columns: ReturnType<typeof getExercisesColumns>;
-  onChange: (rows: Exercise[]) => void;
-};
+export const ExercisesTable = () => {
+  const queryClient = useQueryClient();
+  const [isMounted, setIsMounted] = useState(false);
+  const { data: queryData, isFetching } = useQuery({
+    queryKey: ["exercises"],
+    queryFn: fetchExercises,
 
-const ExercisesTable = memo(
-  ({ rows, onChange, columns }: ExercisesTableProps) => {
-    const sensors = useSensors(useSensor(PointerSensor));
+    refetchOnMount: false,
+  });
+  const { data } = queryData ?? {};
 
-    const handleDragEnd = useCallback(
-      (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (over) {
-          const oldIndex = rows.findIndex((rows) => rows.id === active.id);
-          const newIndex = rows.findIndex((rows) => rows.id === over.id);
-          onChange(arrayMove(rows, oldIndex, newIndex));
+  const columns = getExercisesColumns({ onDelete: () => {} });
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return (
+    <>
+     {/* Button for tests, should be replaced by filters (either here on page.tsx level) */}
+      <Button
+        onClick={() =>
+          queryClient.invalidateQueries({ queryKey: ["exercises"] })
         }
-      },
-      [rows, onChange]
-    );
-
-    return (
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        modifiers={[
-          restrictToVerticalAxis,
-          restrictToWindowEdges,
-          restrictToParentElement,
-        ]}
-        autoScroll={false}
       >
-        <SortableContext
-          items={rows.map((row) => row.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            slots={{ row: DraggableGridRow }}
-            disableRowSelectionOnClick
-          />
-        </SortableContext>
-      </DndContext>
-    );
-  }
-);
-
-export default ExercisesTable;
+        Re-fetch
+      </Button>
+      {!isMounted ? (
+        <Skeleton variant="rectangular" width="100%" height={400} />
+      ) : (
+        <DataGrid
+          slotProps={{
+            loadingOverlay: {
+              variant: "skeleton",
+              noRowsVariant: "skeleton",
+            },
+          }}
+          loading={isFetching}
+          rows={data ?? []}
+          columns={columns}
+          disableRowSelectionOnClick
+        />
+      )}
+    </>
+  );
+};
