@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 
 type ExercisesColumns = {
   onDelete: (id: number) => void;
+  onEditBtnClick: (id: number) => void;
 };
 
 export const getSessionExercisesColumns = ({
@@ -72,6 +73,7 @@ export const getSessionExercisesColumns = ({
 
 export const getExercisesColumns = ({
   onDelete,
+  onEditBtnClick,
 }: ExercisesColumns): GridColDef<Exercise[][number]>[] => [
   {
     field: "name",
@@ -114,6 +116,11 @@ export const getExercisesColumns = ({
           color="secondary"
           type="button"
           size="small"
+          sx={{marginRight: 1}}
+          onClick={() => {
+            onEditBtnClick(params.row.id
+            );
+          }}
         >
           Edit
         </Button>
@@ -123,7 +130,6 @@ export const getExercisesColumns = ({
           type="button"
           size="small"
           onClick={() => {
-            debugger;
             onDelete(params.row.id);
           }}
         >

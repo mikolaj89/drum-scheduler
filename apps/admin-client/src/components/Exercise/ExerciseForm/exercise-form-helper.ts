@@ -2,7 +2,13 @@ import { SelectOption } from "@/components/Common/Field/Select";
 import { Category } from "../../../../../api/db/categories";
 import { z } from "zod";
 import { Exercise } from "../../../../../api/db/exercises";
+import { fetchExercise } from "@/utils/exercises-api";
+import { useQuery } from "@tanstack/react-query";
 
+// react-query keys
+export const EDITED_EXERCISE_ID_KEY = "editedExerciseId";
+
+//validation constants
 const MIN_BPM = 30;
 const MAX_BPM = 350;
 const MIN_DURATION = 1;
@@ -21,7 +27,7 @@ export const exerciseSchema = z.object({
     `Minimum name length is ${MIN_NAME_LENGTH}`
   ),
 
-  description: z.string(),
+  description: z.string().nullable(),
   bpm: requireStr(z.string(), "BPM")
     .refine(
       (val) => !val || parseInt(val) >= MIN_BPM,
@@ -31,7 +37,7 @@ export const exerciseSchema = z.object({
       (val) => !val || parseInt(val) <= MAX_BPM,
       `Maximum BPM is ${MAX_BPM}`
     ),
-  categoryId: z.string().nullable(),
+  categoryId: requireStr(z.string(), "Category"),
   mp3Url: z
     .string()
     .nullable()
@@ -55,10 +61,11 @@ export const getCategoryOpts = (categories: Category[]): SelectOption[] => {
   }));
 };
 
-export const getExercisesSubmitData = (
+export const getExerciseSubmitFormat = (
   data: ExerciseFormData
 ): ExerciseSubmitData => {
   const { name, description, mp3Url, categoryId, bpm, durationMinutes } = data;
+
   return {
     name,
     description,
@@ -67,4 +74,26 @@ export const getExercisesSubmitData = (
     bpm: parseInt(bpm),
     durationMinutes: parseInt(durationMinutes),
   };
+};
+
+export const getExerciseFormDataFormat = (exercise: Exercise): ExerciseFormData => {
+  const { name, description, mp3Url, categoryId, bpm, durationMinutes } =
+    exercise;
+
+  return {
+    name,
+    description,
+    mp3Url,
+    categoryId: categoryId?.toString() ?? "",
+    bpm: bpm?.toString() ?? "",
+    durationMinutes: durationMinutes?.toString() ?? "",
+  };
+};
+
+export const useExerciseQuery = (editedId: number | null) => {
+  return useQuery({
+    queryKey: ["exercise", editedId],
+    queryFn: ({ queryKey }) =>
+      typeof queryKey[1] === "number" ? fetchExercise(queryKey[1]) : null,
+  });
 };

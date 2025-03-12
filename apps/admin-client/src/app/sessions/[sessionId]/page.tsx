@@ -3,7 +3,7 @@ import { SessionDetails } from "@/components/Session/SessionDetails";
 import { Box } from "@mui/material";
 
 export default async function Page({ params }) {
-  const { sessionId } =  params;
+  const { sessionId } = await params;
   const { data, error } = await fetchSession(sessionId as string);
 
   if (data === null) {

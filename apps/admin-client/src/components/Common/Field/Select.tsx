@@ -1,6 +1,11 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from "@mui/material";
-import { FieldError, FieldErrors, UseFormRegisterReturn } from "react-hook-form";
-import { ErrorMessage } from "../Typography";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import { Controller, FieldErrors, Control, FieldError } from "react-hook-form";
 
 export type SelectOption = {
   value: string;
@@ -13,7 +18,7 @@ export type SelectFieldProps = {
   label: string;
   required?: boolean;
   errors: FieldErrors;
-  fieldRegisterReturn : UseFormRegisterReturn
+  control: Control<any>; // Add control from useForm()
 };
 
 export const SelectField = ({
@@ -21,28 +26,35 @@ export const SelectField = ({
   name,
   label,
   errors,
-  fieldRegisterReturn,
+  control,
   required = false,
 }: SelectFieldProps) => {
   return (
-    <FormControl fullWidth>
-      <InputLabel id={label + name}>{label}</InputLabel>
-      <Select
-        required={required}
-        labelId={label + name}
-        id={name}
-        label={label}
-        // name={name
-        error={!!errors[name]}
-        {...fieldRegisterReturn}
-      >
-        {options.map((option: SelectOption) => (
-          <MenuItem value={option.value}>{option.label}</MenuItem>
-        ))}
-      </Select>
+    <FormControl fullWidth error={!!errors[name]}>
+      <InputLabel id={`${label}-${name}`}>{label}</InputLabel>
+      <Controller
+        name={name}
+        control={control}
+        defaultValue="" // Ensures controlled behavior
+        render={({ field }) => (
+          <Select
+            {...field}
+            required={required}
+            labelId={`${label}-${name}`}
+            id={name}
+            value={field.value || ""} // Ensures it's controlled
+            onChange={(event) => field.onChange(event.target.value)} // Update form state
+          >
+            {options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
       {errors[name] && (
-        <FormHelperText error >{(errors[name] as FieldError).message
-          }</FormHelperText>
+        <FormHelperText error>{(errors[name] as FieldError).message}</FormHelperText>
       )}
     </FormControl>
   );

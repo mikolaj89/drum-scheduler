@@ -9,6 +9,10 @@ export async function getExercises() {
   return await db.select().from(exercisesSchema);
 }
 
+export async function getExerciseById(id: number) {
+  return await db.select().from(exercisesSchema).where(eq(exercisesSchema.id, id));
+}
+
 export const addExercise = async (exercise: ExerciseInput) => {
   return await db.insert(exercisesSchema).values(exercise);
 };

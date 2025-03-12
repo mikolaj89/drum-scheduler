@@ -11,26 +11,28 @@ import {
   exerciseSchema,
   ExerciseFormData,
   getCategoryOpts,
-  getExercisesSubmitData,
+  getExerciseSubmitFormat,
 } from "./exercise-form-helper";
-import { get } from "http";
 
 export const ExerciseForm = () => {
   const {
     register,
     handleSubmit,
+    control,
     getValues,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
     resolver: zodResolver(exerciseSchema),
   });
+  console.log("getValues: ",getValues())
+  console.log('errors: ',errors);
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async (data: ExerciseFormData) => {
-      const response = await createExercise(getExercisesSubmitData(data));
+      const response = await createExercise(getExerciseSubmitFormat(data));
       if (response.error) {
         throw new Error(response.error.message);
       }
@@ -61,7 +63,7 @@ export const ExerciseForm = () => {
         helperText={errors.name?.message}
       />
       <SelectField
-        fieldRegisterReturn={register("categoryId")}
+        control={control}
         errors={errors}
         label="Category"
         name="categoryId"
