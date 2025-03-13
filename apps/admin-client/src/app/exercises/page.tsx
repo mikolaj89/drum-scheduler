@@ -14,7 +14,6 @@ export default async function ExercisesPage() {
   // Step 1: Create a new query client
   const queryClient = new QueryClient();
 
-  // Step 2: Prefetch data to simulate SSR
   await queryClient.prefetchQuery({
     queryKey: ["exercises"],
     queryFn: fetchExercises,
@@ -30,9 +29,8 @@ export default async function ExercisesPage() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Typography variant="h1">Exercises</Typography>
 
-          <CreateExercise/>
-          <ExercisesTable />
-        
+        <CreateExercise />
+        <ExercisesTable />
       </HydrationBoundary>
     </>
   );

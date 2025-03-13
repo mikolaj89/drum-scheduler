@@ -25,18 +25,19 @@ const style = {
   p: 4,
 };
 
-type EditExerciseProps = {
+type EditExerciseModalProps = {
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  onClose: () => void;
+  exerciseId: number | null;
 };
 
-export const EditExerciseModal = ({ isOpen, setIsOpen }: EditExerciseProps) => {
-  const handleClose = () => setIsOpen(false);
+export const EditExerciseModal = ({ isOpen, onClose, exerciseId }: EditExerciseModalProps) => {
+  
   return (
     <>
       <Modal
         open={isOpen}
-        onClose={handleClose}
+        onClose={onClose}
         aria-labelledby="edit-modal-title"
         aria-describedby="edit-modal-description"
       >
@@ -44,7 +45,8 @@ export const EditExerciseModal = ({ isOpen, setIsOpen }: EditExerciseProps) => {
           <Typography id="edit-modal-title" variant="h1" component="h3">
             Edit drum exercise
           </Typography>
-          <EditExerciseForm handleClose={handleClose} />
+          {/* <EditExerciseForm exerciseId={exerciseId} handleClose={onClose} /> */}
+          {exerciseId && <EditExerciseForm exerciseId={exerciseId} handleClose={onClose} />}
         </Box>
       </Modal>
     </>

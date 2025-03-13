@@ -34,16 +34,17 @@ export class ApiClient {
 
       // handle HTTP errors (eg. 4xx, 5xx)
       if (!response.ok) {
-        return await this.getErrorResponse(response);
+        return await this.getHTTPErrorResponse(response);
       }
-      if(response.status === 204) {
+      if (response.status === 204) {
         return { data: null };
       }
 
       const json = await response.json();
-
-      // check if response has acceptable format
-      if (json.data === undefined && response.status !== 204 && json.success !== true) {
+      if (json.data === undefined) {
+        if (json.success === true) {
+          return { data: json };
+        }
         console.warn(`Warning: Unexpected response format from ${url}`);
         return {
           data: null,
@@ -64,8 +65,7 @@ export class ApiClient {
       };
     }
   }
-
-  private async getErrorResponse(
+  private async getHTTPErrorResponse(
     response: Response
   ): Promise<ApiResponse<null>> {
     try {

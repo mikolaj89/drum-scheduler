@@ -1,10 +1,9 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TextField, Button, CircularProgress } from "@mui/material";
+import { TextField, Button, CircularProgress, Box, Skeleton } from "@mui/material";
 import {
   editExercise,
   fetchCategories,
@@ -16,7 +15,6 @@ import {
   ExerciseFormData,
   getCategoryOpts,
   getExerciseSubmitFormat,
-  EDITED_EXERCISE_ID_KEY,
   getExerciseFormDataFormat,
 } from "./exercise-form-helper";
 import { FormError } from "@/components/Common/Typography";
@@ -24,22 +22,17 @@ import { useEffect, useMemo } from "react";
 
 type ExerciseFormProps = {
   handleClose: () => void;
+  exerciseId: number;
 };
 
-export const EditExerciseForm = ({ handleClose }: ExerciseFormProps) => {
+export const EditExerciseForm = ({ handleClose, exerciseId }: ExerciseFormProps) => {
   const queryClient = useQueryClient();
 
-  // Get the current editing ID from cache
-  const editedExerciseId: number | undefined = queryClient.getQueryData([
-    EDITED_EXERCISE_ID_KEY,
-  ]);
-
-  // Use that ID to get the exercise data
-  const { data, isLoading : isFetching } = useQuery({
-    queryKey: ["exercise", editedExerciseId],
-    queryFn: () => (editedExerciseId ? fetchExercise(editedExerciseId) : null),
-    // Only fetch if we have an ID
-    enabled: !!editedExerciseId,
+  // Use the directly passed ID to get the exercise data
+  const { data, isLoading: isFetching } = useQuery({
+    queryKey: ["exercise", exerciseId],
+    queryFn: () => fetchExercise(exerciseId),
+    // Will be enabled since exerciseId is guaranteed to exist
   });
 
   const initialValues = useMemo(() => {
@@ -50,14 +43,14 @@ export const EditExerciseForm = ({ handleClose }: ExerciseFormProps) => {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting, },
-    getValues,
+    formState: { errors, isSubmitting },
     reset,
   } = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(exerciseSchema),
-    
   });
+  
+  // Reset form when data changes
   useEffect(() => {
     if (initialValues) {
       reset(initialValues);
@@ -65,17 +58,8 @@ export const EditExerciseForm = ({ handleClose }: ExerciseFormProps) => {
   }, [initialValues, reset]);
 
   const editMutation = useMutation({
-    mutationFn: async ({
-      data,
-      id,
-    }: {
-      data: ExerciseFormData;
-      id?: number;
-    }) => {
-      if (!id) {
-        throw new Error("No id provided for editing exercise");
-      }
-      const response = await editExercise(getExerciseSubmitFormat(data), id);
+    mutationFn: async (data: ExerciseFormData) => {
+      const response = await editExercise(getExerciseSubmitFormat(data), exerciseId);
 
       if (response.error) {
         throw new Error(response.error.message);
@@ -83,26 +67,35 @@ export const EditExerciseForm = ({ handleClose }: ExerciseFormProps) => {
       return response;
     },
     onSuccess: () => {
+      // More precise invalidation
+      queryClient.invalidateQueries({ queryKey: ["exercise", exerciseId] });
       queryClient.invalidateQueries({ queryKey: ["exercises"] });
-      queryClient.invalidateQueries({ queryKey: ["exercise"] });
       reset();
       handleClose();
     },
   });
 
-  const categoriesData = useQuery({
+  const { data: categoriesData } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
-  }).data;
+  });
 
-  const onEditSubmit = (data: ExerciseFormData) =>
-    editMutation.mutate({ data, id: editedExerciseId });
+  const onEditSubmit = (data: ExerciseFormData) => editMutation.mutate(data);
 
-  if(isFetching) {
-    return <CircularProgress />
-  };
+  if (isFetching) {
+    return (
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={56} />
+        <Skeleton variant="rectangular" height={40} width="100%" />
+      </Box>
+    );
+  }
 
-  console.log("getValues: ",getValues());
   return (
     <form
       onSubmit={handleSubmit(onEditSubmit)}

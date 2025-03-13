@@ -10,17 +10,17 @@ import { getExercisesColumns } from "./ExercisesTableHelper";
 import { Button, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { EditExerciseModal } from "../EditExerciseModal";
-import { EDITED_EXERCISE_ID_KEY } from "../ExerciseForm/exercise-form-helper";
 
 export const ExercisesTable = () => {
   const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingExerciseId, setEditingExerciseId] = useState<number | null>(null);
+  
   const { data: queryData, isFetching } = useQuery({
     queryKey: ["exercises"],
     queryFn: fetchExercises,
-
-    
+    refetchOnMount: false,
   });
   const { data } = queryData ?? {};
 
@@ -39,19 +39,26 @@ export const ExercisesTable = () => {
   const onDelete = (id: number) => deleteMutation.mutate(id);
 
   const onEditBtnClick = (id: number) => {
+    setEditingExerciseId(id);
+    setIsEditModalOpen(true);
+    
+    // Optionally prefetch the data (still a good practice)
     queryClient.prefetchQuery({
       queryKey: ["exercise", id],
       queryFn: () => fetchExercise(id),
     });
-    queryClient.setQueryData([EDITED_EXERCISE_ID_KEY], id);
+  };
 
-    setIsEditModalOpen(true);
+  const handleModalClose = () => {
+    setIsEditModalOpen(false);
+    setEditingExerciseId(null);
   };
 
   const columns = getExercisesColumns({
     onDelete,
     onEditBtnClick,
   });
+  
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -59,14 +66,12 @@ export const ExercisesTable = () => {
   return (
     <>
       <EditExerciseModal
-        setIsOpen={setIsEditModalOpen}
+        exerciseId={editingExerciseId}
         isOpen={isEditModalOpen}
+        onClose={handleModalClose}
       />
-      {/* Button for tests, should be replaced by filters (either here on page.tsx level) */}
       <Button
-        onClick={() =>
-          queryClient.invalidateQueries({ queryKey: ["exercises"] })
-        }
+        onClick={() => queryClient.invalidateQueries({ queryKey: ["exercises"] })}
       >
         Re-fetch
       </Button>
