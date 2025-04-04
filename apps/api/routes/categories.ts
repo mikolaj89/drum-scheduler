@@ -4,6 +4,7 @@ import {
   getCategoryExercises,
   deleteCategory,
 } from "../db/categories.ts";
+import { getFormattedErrorBody } from "../utils/response.ts";
 
 const router = new Router();
 
@@ -15,10 +16,10 @@ export default router
     } catch (error) {
       console.error("Error fetching categories:", error);
       context.response.status = 500;
-      context.response.body = {
-        data: null,
-        error: "Failed to fetch categories",
-      };
+      context.response.body = getFormattedErrorBody(
+        "Failed to fetch categories",
+        "INTERNAL_SERVER_ERROR"
+      );
     }
   })
   .get("/categories/:id/exercises", async (context) => {
@@ -27,15 +28,23 @@ export default router
       const id = params.id;
       const result = await getCategoryExercises(parseInt(id));
       if (result) {
-        response.body = result;
+        response.body = { data: result};
       } else {
         response.status = 404;
-        response.body = { error: "Category not found" };
+        response.body = getFormattedErrorBody(
+          "Category exercises not found",
+          "NOT_FOUND"
+        );
       }
     } catch (error) {
       console.error("Error fetching category exercises:", error);
       response.status = 500;
-      response.body = { error: "Failed to fetch category exercises" };
+      response.body = {
+        error: {
+          message: "Failed to fetch category exercises",
+          errorCode: "INTERNAL_SERVER_ERROR",
+        },
+      };
     }
   })
   .delete("/categories/:id", async (context) => {

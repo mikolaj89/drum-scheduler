@@ -31,8 +31,11 @@ type EditExerciseModalProps = {
   exerciseId: number | null;
 };
 
-export const EditExerciseModal = ({ isOpen, onClose, exerciseId }: EditExerciseModalProps) => {
-  
+export const EditExerciseModal = ({
+  isOpen,
+  onClose,
+  exerciseId,
+}: EditExerciseModalProps) => {
   return (
     <>
       <Modal
@@ -46,7 +49,9 @@ export const EditExerciseModal = ({ isOpen, onClose, exerciseId }: EditExerciseM
             Edit drum exercise
           </Typography>
           {/* <EditExerciseForm exerciseId={exerciseId} handleClose={onClose} /> */}
-          {exerciseId && <EditExerciseForm exerciseId={exerciseId} handleClose={onClose} />}
+          {exerciseId && (
+            <EditExerciseForm exerciseId={exerciseId} handleClose={onClose} />
+          )}
         </Box>
       </Modal>
     </>

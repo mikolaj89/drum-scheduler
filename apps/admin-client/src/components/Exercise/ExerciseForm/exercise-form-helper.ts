@@ -61,6 +61,13 @@ export const getCategoryOpts = (categories: Category[]): SelectOption[] => {
   }));
 };
 
+export const getExercisesOpts = (exercises: Exercise[]): SelectOption[] => {
+  return exercises.map((exercise) => ({
+    value: exercise.id.toString(),
+    label: exercise.name,
+  }));
+};
+
 export const getExerciseSubmitFormat = (
   data: ExerciseFormData
 ): ExerciseSubmitData => {

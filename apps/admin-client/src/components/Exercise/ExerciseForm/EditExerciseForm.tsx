@@ -115,7 +115,7 @@ export const EditExerciseForm = ({ handleClose, exerciseId }: ExerciseFormProps)
         errors={errors}
         label="Category"
         name="categoryId"
-        options={getCategoryOpts(categoriesData?.data ?? [])}
+        options={getCategoryOpts(categoriesData ?? [])}
       />
       <TextField
         type="text"

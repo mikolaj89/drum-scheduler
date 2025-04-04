@@ -19,6 +19,7 @@ export type SelectFieldProps = {
   required?: boolean;
   errors: FieldErrors;
   control: Control<any>; // Add control from useForm()
+  onSelect?: (val: string) => void
 };
 
 export const SelectField = ({
@@ -28,22 +29,26 @@ export const SelectField = ({
   errors,
   control,
   required = false,
+  onSelect = () => {},
 }: SelectFieldProps) => {
   return (
     <FormControl fullWidth error={!!errors[name]}>
-      <InputLabel id={`${label}-${name}`}>{label}</InputLabel>
+      <InputLabel sx={{backgroundColor: "white"}} id={`${label}-${name}`}>{label}</InputLabel>
       <Controller
         name={name}
         control={control}
-        defaultValue="" // Ensures controlled behavior
+        defaultValue=""
         render={({ field }) => (
           <Select
             {...field}
             required={required}
             labelId={`${label}-${name}`}
             id={name}
-            value={field.value || ""} // Ensures it's controlled
-            onChange={(event) => field.onChange(event.target.value)} // Update form state
+            value={field.value || ""} 
+            onChange={(event) => {
+              field.onChange(event.target.value);
+              onSelect(event.target.value);
+            } } 
           >
             {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>

@@ -1,5 +1,6 @@
 import { fetchSessions } from "@/utils/sessions-api";
 import { SessionsList } from "@/components/Session/SessionsList";
+import { Typography } from "@mui/material";
 
 export default async function Page() {
   const { data, error } = await fetchSessions();
@@ -18,6 +19,10 @@ export default async function Page() {
       </>
     );
   }
-
-  return <SessionsList sessionsData={data} />;
+  return (
+    <>
+      <Typography variant="h1">Sessions</Typography>
+      <SessionsList sessionsData={data} />
+    </>
+  );
 }

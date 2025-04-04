@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { sessions, sessionexercises, exercises, categories } from "./schema.ts";
+import { sessions, sessionexercises, exercises, categories } from "./schema";
 
 export const sessionexercisesRelations = relations(sessionexercises, ({one}) => ({
 	session: one(sessions, {

@@ -21,7 +21,7 @@ export const CreateExercise = () => {
 
   return (
     <>
-      <Button type="button" onClick={() => setIsOpen(true)}>
+      <Button sx={{marginBottom: 2}} type="button" variant="contained"  onClick={() => setIsOpen(true)}>
         Create Exercise
       </Button>
       <Modal

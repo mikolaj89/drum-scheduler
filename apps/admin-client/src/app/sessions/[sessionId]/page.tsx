@@ -1,8 +1,14 @@
 import { fetchSession } from "@/utils/sessions-api";
 import { SessionDetails } from "@/components/Session/SessionDetails";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
-export default async function Page({ params }) {
+type PageProps = {
+  params: {
+    sessionId: string;
+  };
+}
+
+export default async function Page({ params } : PageProps) {
   const { sessionId } = await params;
   const { data, error } = await fetchSession(sessionId as string);
 
@@ -11,6 +17,10 @@ export default async function Page({ params }) {
   }
 
   console.log({ data, error });
-
-  return <SessionDetails sessionData={data} />;
+  return (
+    <>
+      <Typography variant="h1">{data.name}</Typography>
+      <SessionDetails sessionData={data} />
+    </>
+  )
 }

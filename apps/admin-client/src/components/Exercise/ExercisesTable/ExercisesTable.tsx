@@ -70,11 +70,6 @@ export const ExercisesTable = () => {
         isOpen={isEditModalOpen}
         onClose={handleModalClose}
       />
-      <Button
-        onClick={() => queryClient.invalidateQueries({ queryKey: ["exercises"] })}
-      >
-        Re-fetch
-      </Button>
       {!isMounted ? (
         <Skeleton variant="rectangular" width="100%" height={400} />
       ) : (

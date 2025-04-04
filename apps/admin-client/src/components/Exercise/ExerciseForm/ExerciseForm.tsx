@@ -19,15 +19,11 @@ export const ExerciseForm = () => {
     register,
     handleSubmit,
     control,
-    getValues,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
     resolver: zodResolver(exerciseSchema),
   });
-  console.log("getValues: ",getValues())
-  console.log('errors: ',errors);
-
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -67,7 +63,7 @@ export const ExerciseForm = () => {
         errors={errors}
         label="Category"
         name="categoryId"
-        options={getCategoryOpts(categoriesData?.data ?? [])}
+        options={getCategoryOpts(categoriesData ?? [])}
       />
       <TextField
         type="text"

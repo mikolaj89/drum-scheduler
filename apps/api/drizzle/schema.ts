@@ -1,4 +1,4 @@
-import { pgTable, unique, serial, varchar, timestamp, integer, text, foreignKey } from "drizzle-orm/pg-core"
+import { pgTable, unique, serial, varchar, timestamp, integer, text, foreignKey, numeric, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
@@ -43,6 +43,16 @@ export const sessionexercises = pgTable("sessionexercises", {
 		}).onDelete("cascade"),
 	unique("sessionexercises_session_id_exercise_id_key").on(table.sessionId, table.exerciseId),
 ]);
+
+export const cars = pgTable("cars", {
+	id: serial().primaryKey().notNull(),
+	make: varchar({ length: 50 }).notNull(),
+	model: varchar({ length: 50 }).notNull(),
+	color: varchar({ length: 30 }),
+	price: numeric({ precision: 10, scale:  2 }),
+	isAvailable: boolean("is_available").default(true),
+	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+});
 
 export const categories = pgTable("categories", {
 	id: serial().primaryKey().notNull(),

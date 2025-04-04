@@ -11,13 +11,9 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-import {TableLink} from "../Common/Link";
+import { TableLink } from "../Common/Link";
 
-export const SessionsList = ({
-  sessionsData,
-}: {
-  sessionsData: Session[];
-}) => {
+export const SessionsList = ({ sessionsData }: { sessionsData: Session[] }) => {
   const { data } = useQuery({
     queryKey: ["sessions"],
     queryFn: fetchSessions,
@@ -38,11 +34,11 @@ export const SessionsList = ({
         <TableBody>
           {data?.map((row) => (
             <TableRow
-              key={row.name}
+              key={row.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-               <TableLink href={`/sessions/${row.id}`}> {row.name} </TableLink>
+                <TableLink href={`/sessions/${row.id}`}> {row.name} </TableLink>
               </TableCell>
               <TableCell align="right">{row.notes}</TableCell>
               <TableCell align="right">{row.createdAt}</TableCell>

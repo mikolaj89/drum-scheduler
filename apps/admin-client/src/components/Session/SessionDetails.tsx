@@ -9,20 +9,20 @@ import { useCallback, useState } from "react";
 import { getSessionExercisesColumns } from "../Exercise/ExercisesTable/ExercisesTableHelper";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
+import { SelectExerciseModal } from "./AddExerciseToSessionModal/AddExerciseToSessionModal";
 
 export const SessionDetails = ({
   sessionData,
 }: {
   sessionData: SessionWithExercises;
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { data } = useQuery({
     queryKey: ["session", sessionData.id],
     queryFn: ({ queryKey }) => fetchSession(queryKey[1].toString()),
     initialData: { data: sessionData },
     refetchOnMount: false,
   }).data;
-
-  const { name, totalDuration } = data ?? {};
 
   const [rows, setRows] = useState(data?.exercises ?? []);
   const handleChangeRows = useCallback(
@@ -36,14 +36,18 @@ export const SessionDetails = ({
     console.log("delete exercise: ", id);
   };
 
-  const columns = getSessionExercisesColumns({ onDelete });
+  const columns = getSessionExercisesColumns({
+    onDelete,
+    onEditBtnClick: onDelete,
+  });
 
   return (
     <>
-      <Typography variant="h1">{name}</Typography>
-      <Typography variant="h2">
+      {/* consider adding a total duration once i figure out how to sum it up with mp3 length. Otherwise it doesn't make sense  */}
+      {/* <Typography variant="h2">  
         Total duration: {totalDuration} minutes
-      </Typography>
+      </Typography> */}
+      <SelectExerciseModal sessionId={sessionData.id.toString()} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
       <Divider />
       <Box sx={{ paddingY: 2 }}>
         <Button
@@ -52,6 +56,7 @@ export const SessionDetails = ({
           type="button"
           size="medium"
           startIcon={<AddIcon />}
+          onClick={() => setIsModalOpen(true)}
         >
           Add exercise
         </Button>
