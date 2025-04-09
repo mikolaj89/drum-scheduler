@@ -19,7 +19,7 @@ export const ExerciseForm = () => {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm({
     resolver: zodResolver(exerciseSchema),

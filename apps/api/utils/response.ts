@@ -3,7 +3,9 @@ export type ErrorCode =
   | "UNAUTHORIZED"
   | "NOT_FOUND"
   | "INTERNAL_SERVER_ERROR"
-  | "NETWORK_ERROR";
+  | "NETWORK_ERROR"
+  | "VALIDATION_ERROR"
+  | "PARSE_ERROR";
 
 // Success response (for 2xx status codes)
 export interface ApiSuccessResponse<T> {
@@ -15,6 +17,7 @@ export interface ApiErrorResponse {
   error: {
     message: string;
     errorCode: string;
+    fieldErrors?: Record<string, string>;
   };
 }
 

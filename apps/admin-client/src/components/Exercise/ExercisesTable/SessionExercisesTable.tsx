@@ -32,7 +32,13 @@ type ExercisesTableProps = {
 };
 
 const ExercisesTable = memo(
-  ({ rows, onChange, columns, isLoading, draggable = false }: ExercisesTableProps) => {
+  ({
+    rows,
+    onChange,
+    columns,
+    isLoading,
+    draggable = false,
+  }: ExercisesTableProps) => {
     const sensors = useSensors(useSensor(PointerSensor));
 
     const handleDragEnd = useCallback(

@@ -16,7 +16,7 @@ export async function getSessions() {
 }
 
 export const addSession = async (session: SessionInput) => {
-  return await db.insert(sessionsSchema).values(session);
+  return await db.insert(sessionsSchema).values(session).returning();
 };
 
 export const deleteSession = async (id: number) => {

@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import NextLink  from "next/link";
+import NextLink from "next/link";
 
 export const Link = styled(NextLink)(({ theme }) => ({
   color: "inherit",
@@ -9,20 +9,16 @@ export const Link = styled(NextLink)(({ theme }) => ({
   "&:hover": {
     color: "inherit",
     textDecoration: "underline",
-    
   },
 }));
 
 export const TableLink = styled(NextLink)(({ theme }) => ({
-  color: "inherit",
+  color: theme.palette.primary.dark,
+  fontWeight: 500,
   textDecoration: "none",
   transition: "color 0.2s ease-in-out",
   textUnderlineOffset: "0.2em",
   "&:hover": {
-    color: "inherit",
     textDecoration: "underline",
   },
 }));
-
-
-

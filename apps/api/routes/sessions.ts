@@ -1,9 +1,7 @@
 import { Router } from "@oak/oak";
 import {
   getSessions,
-  getSession,
-  addSession,
-  deleteSession,
+  getSession, deleteSession
 } from "../db/sessions.ts";
 import {
   addSessionExercise,
@@ -11,7 +9,7 @@ import {
   deleteSessionExercise,
 } from "../db/sessionExercises.ts";
 import { getFormattedSession } from "../utils/session.ts";
-import { SessionInput } from "../db/types.ts";
+import { createSession } from "./sessions/createSession.ts";
 
 const router = new Router();
  
@@ -54,32 +52,7 @@ export default router
     }
   })
   // Add a new session
-  .post("/sessions", async (context) => {
-    const { request, response } = context;
-    try {
-      const { name, notes } = (await request.body.json()) as SessionInput;
-
-      if (typeof name !== "string" || typeof notes !== "string") {
-        response.status = 400;
-        response.body = {
-          error: "Invalid session data. Name and notes are required",
-        };
-        return;
-      }
-
-      const result = await addSession({
-        name,
-        notes,
-      });
-
-      response.status = 201;
-      response.body = result.command;
-    } catch (error) {
-      console.error("Error adding session:", error);
-      response.status = 500;
-      response.body = { error: "Failed to add session" };
-    }
-  })
+  .post("/sessions", createSession)
   // delete session
   .delete("/sessions/:id", async (context) => {
     const { params, response } = context;

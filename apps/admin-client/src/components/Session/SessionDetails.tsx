@@ -56,7 +56,7 @@ export const SessionDetails = ({
         queryKey: ["session", sessionData.id],
       });
       setIsOrderChanged(false);
-    },
+    }
   });
 
   const { mutate, isPending } = useMutation({
@@ -115,7 +115,7 @@ export const SessionDetails = ({
 
   return (
     <>
-      {/* consider adding a total duration once i figure out how to sum it up with mp3 length. Otherwise it doesn't make sense  */}
+      {/* TODO: consider adding a total duration once i figure out how to sum it up with mp3 length. Otherwise it doesn't make sense  */}
       {/* <Typography variant="h2">  
         Total duration: {totalDuration} minutes
       </Typography> */}
@@ -147,7 +147,7 @@ export const SessionDetails = ({
           >
             Save order
           </Button>
-          {/* reset button as followup - better for UX */}
+          {/* TODO:  reset button as followup - better for UX */}
           {/* <Button
             variant="outlined"
             color="error"
