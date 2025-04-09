@@ -98,6 +98,7 @@ export const ExerciseForm = () => {
         type="submit"
         variant="contained"
         color="primary"
+        size="large"
         disabled={mutation.isPending}
       >
         {mutation.isPending ? <CircularProgress size={24} /> : "Add Exercise"}

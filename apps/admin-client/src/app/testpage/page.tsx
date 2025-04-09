@@ -1,8 +1,5 @@
-import { fetchExercises } from "@/utils/exercises-api";
+
 import { Typography } from "@mui/material";
-import { Suspense } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { getExercisesColumns } from "@/components/Exercise/ExercisesTable/ExercisesTableHelper";
 
 export default async function ExercisesPage() {
 //   const { data } = await fetchExercises();
@@ -50,9 +47,9 @@ export default async function ExercisesPage() {
   return (
     <>
       <Typography variant="h1">Exercises</Typography>
-      <Suspense fallback={<p>Loading table...</p>}>
+      {/* <Suspense fallback={<p>Loading table...</p>}>
         <DataGrid rows={testData} columns={columns}></DataGrid>
-      </Suspense>
+      </Suspense> */}
     </>
   );
 }

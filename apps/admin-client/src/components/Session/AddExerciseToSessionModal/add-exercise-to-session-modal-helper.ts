@@ -3,9 +3,9 @@ import { addExercisesToSession } from "@/utils/sessions-api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAddExerciseToSession = (
-  sessionId: string,
+  sessionId: number,
   exerciseId: string,
-  onSuccess: () => void
+  onSuccess: (id: number) => void
 ) =>
   useMutation({
     mutationFn: async () => {
@@ -17,9 +17,9 @@ export const useAddExerciseToSession = (
         throw new Error(response.error.message);
       }
 
-      return response.data;
+      return sessionId;
     },
-    onSuccess,
+    onSuccess
   });
 
 export const useCategoryExercisesQuery = (categoryId: string) =>

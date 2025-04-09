@@ -1,6 +1,6 @@
 import { GridColDef } from "@mui/x-data-grid";
-import { Exercise } from "../../../../../api/db/exercises";
 import { Button } from "@mui/material";
+import { Exercise } from "../../../../../api/db/types";
 
 type ExercisesColumns = {
   onDelete: (id: number) => void;
@@ -56,12 +56,12 @@ export const getSessionExercisesColumns = ({
     editable: false,
     renderCell: (params) => (
       <Button
-        variant="contained"
-        color="secondary"
+        variant="outlined"
+        color="primary"
         type="button"
         size="small"
         onClick={() => {
-          debugger;
+
           onDelete(params.row.id);
         }}
       >
@@ -112,8 +112,8 @@ export const getExercisesColumns = ({
     renderCell: (params) => (
       <>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outlined"
+          color="primary"
           type="button"
           size="small"
           sx={{marginRight: 1}}
@@ -125,8 +125,8 @@ export const getExercisesColumns = ({
           Edit
         </Button>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outlined"
+          color="primary"
           type="button"
           size="small"
           onClick={() => {

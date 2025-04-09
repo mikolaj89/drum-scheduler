@@ -2,9 +2,6 @@ import { db } from "./drizzle.ts";
 import { categoriesSchema, exercisesSchema } from "./schema.ts";
 import { eq } from "drizzle-orm";
 
-export type Category = typeof categoriesSchema.$inferSelect;
-export type CategoryInput = typeof categoriesSchema.$inferInsert;
-
 export async function getCategories() {
   return await db.select().from(categoriesSchema);
 }
@@ -15,8 +12,7 @@ export async function getCategoryExercises(categoryId: number) {
   return await db
     .select()
     .from(exercisesSchema)
-    .where(eq(exercisesSchema.categoryId, categoryId
-    ));
+    .where(eq(exercisesSchema.categoryId, categoryId));
 }
 
 // delete category

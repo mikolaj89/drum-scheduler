@@ -3,7 +3,6 @@ import {
   getSessions,
   getSession,
   addSession,
-  SessionInput,
   deleteSession,
 } from "../db/sessions.ts";
 import {
@@ -12,6 +11,7 @@ import {
   deleteSessionExercise,
 } from "../db/sessionExercises.ts";
 import { getFormattedSession } from "../utils/session.ts";
+import { SessionInput } from "../db/types.ts";
 
 const router = new Router();
  

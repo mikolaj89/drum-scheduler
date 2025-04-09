@@ -10,11 +10,9 @@ export default async function Page() {
       <>
         <h1>Oops! Something went wrong</h1>
         {error !== undefined && (
-          <>
-            <p>
-              Error message: <b>{error.message}</b>
-            </p>
-          </>
+          <p>
+            Error message: <b>{error.message}</b>
+          </p>
         )}
       </>
     );

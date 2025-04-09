@@ -1,5 +1,5 @@
-import { Exercise } from "../db/exercises.ts";
-import { Session } from "../db/sessions.ts";
+import { Exercise, Session } from "../db/types.ts";
+
 
 export type SessionWithExercises = Session & {
   totalDuration: number;

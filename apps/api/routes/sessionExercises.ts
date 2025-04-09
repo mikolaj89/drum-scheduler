@@ -2,8 +2,9 @@ import { Router } from "@oak/oak";
 import {
   addSessionExercise,
   getSessionExercises,
-  deleteSessionExercise,
+  deleteSessionExercise
 } from "../db/sessionExercises.ts";
+import { patchOrderHandler } from "./sessions/patchOrder.ts";
 
 const router = new Router();
 
@@ -27,7 +28,8 @@ export default router
       response.body = { error: "Failed to fetch session exercises" };
     }
   })
-  // add single exercise for session
+  //update session
+  .patch("/sessions/:id/exercises-order", patchOrderHandler)
   .post("/sessions/:sessionid/exercises/:exerciseid", async (context) => {
     const { response, params } = context;
     try {

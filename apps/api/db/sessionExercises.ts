@@ -1,11 +1,33 @@
 import { db } from "./drizzle.ts";
 import { sessionexercisesSchema, exercisesSchema } from "./schema.ts";
+import { Exercise, SessionExerciseInput } from "./types.ts";
 import { and, eq } from "drizzle-orm";
 
-export type SessionExercise = typeof sessionexercisesSchema.$inferSelect;
-export type SessionExerciseInput = typeof sessionexercisesSchema.$inferInsert;
+const SESSION_EXERCISES_TABLE = "sessionexercises";
 
+export async function reorderSessionExercises(
+  sessionId: number,
+  exercises: Exercise[]
+) {
+  if (exercises.length === 0) return;
 
+  const valuesClause = exercises
+    .map((exercise, index) => `WHEN '${exercise.id}' THEN ${index}`)
+    .join(" ");
+
+  const exerciseIds = exercises.map((ex) => `'${ex.id}'`).join(", ");
+
+  const sql = `
+    UPDATE ${SESSION_EXERCISES_TABLE}
+    SET order_index = CASE exercise_id
+      ${valuesClause}
+    END
+    WHERE session_id = '${sessionId}'
+      AND exercise_id IN (${exerciseIds});
+  `;
+
+  return await db.execute(sql);
+}
 
 export async function getSessionExercises(sessionId: number) {
   return await db
@@ -24,8 +46,28 @@ export async function getSessionExercises(sessionId: number) {
       exercisesSchema,
       eq(sessionexercisesSchema.exerciseId, exercisesSchema.id)
     )
-    .where(eq(sessionexercisesSchema.sessionId, sessionId));
+    .where(eq(sessionexercisesSchema.sessionId, sessionId))
+    .orderBy(sessionexercisesSchema.orderIndex); // 👈 here!
 }
+
+// export async function reorderSessionExercises(
+//   sessionId: number,
+//   exercises: Exercise[]
+// ) {
+//   const updates = exercises.map((exercise, index) => {
+//     return db
+//       .update(sessionexercisesSchema)
+//       .set({ orderIndex: index })
+//       .where(
+//         and(
+//           eq(sessionexercisesSchema.sessionId, sessionId),
+//           eq(sessionexercisesSchema.exerciseId, exercise.id)
+//         )
+//       );
+//   });
+
+//   return await Promise.all(updates);
+// }
 
 export const addSessionExercise = async (
   sessionExercise: SessionExerciseInput

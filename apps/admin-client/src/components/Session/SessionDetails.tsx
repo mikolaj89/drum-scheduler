@@ -1,15 +1,15 @@
 "use client";
-import { fetchSession } from "@/utils/sessions-api";
-import { useQuery } from "@tanstack/react-query";
+import { fetchSession, removeExerciseFromSession } from "@/utils/sessions-api";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { SessionWithExercises } from "../../../../api/utils/session";
-import { Exercise } from "../../../../api/db/exercises";
 import ExercisesTable from "../Exercise/ExercisesTable/SessionExercisesTable";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSessionExercisesColumns } from "../Exercise/ExercisesTable/ExercisesTableHelper";
 import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
 import { SelectExerciseModal } from "./AddExerciseToSessionModal/AddExerciseToSessionModal";
+import { Exercise } from "../../../../api/db/types";
 
 export const SessionDetails = ({
   sessionData,
@@ -17,12 +17,32 @@ export const SessionDetails = ({
   sessionData: SessionWithExercises;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data } = useQuery({
+  
+  const {
+    data: { data },
+    isFetching,
+  } = useQuery({
     queryKey: ["session", sessionData.id],
     queryFn: ({ queryKey }) => fetchSession(queryKey[1].toString()),
     initialData: { data: sessionData },
     refetchOnMount: false,
-  }).data;
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["deleteSession", sessionData.id],
+    mutationFn: async ({
+      sessionId,
+      exerciseId,
+    }: {
+      sessionId: number;
+      exerciseId: number;
+    }) => {
+      const result = await removeExerciseFromSession(sessionId, exerciseId);
+      if ("error" in result) {
+        throw new Error(result.error.message);
+      }
+    },
+  });
 
   const [rows, setRows] = useState(data?.exercises ?? []);
   const handleChangeRows = useCallback(
@@ -32,8 +52,22 @@ export const SessionDetails = ({
     [setRows]
   );
 
-  const onDelete = (id: number) => {
-    console.log("delete exercise: ", id);
+  useEffect(() => {
+    if (data?.exercises) {
+      setRows(data.exercises);
+    }
+  }, [data?.exercises]);
+
+  // useEffect(( => {
+  //   // update re-ordered rows here
+  // }, [rows]);
+
+  const onDelete = (exerciseId: number) => {
+    mutate({
+      sessionId: sessionData.id,
+      exerciseId: exerciseId,
+    });
+    setRows((prev) => prev.filter((exercise) => exercise.id !== exerciseId));
   };
 
   const columns = getSessionExercisesColumns({
@@ -47,7 +81,11 @@ export const SessionDetails = ({
       {/* <Typography variant="h2">  
         Total duration: {totalDuration} minutes
       </Typography> */}
-      <SelectExerciseModal sessionId={sessionData.id.toString()} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+      <SelectExerciseModal
+        sessionId={sessionData.id}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
       <Divider />
       <Box sx={{ paddingY: 2 }}>
         <Button
@@ -63,6 +101,7 @@ export const SessionDetails = ({
       </Box>
       <Paper>
         <ExercisesTable
+          isLoading={isFetching || isPending}
           draggable={true}
           onChange={handleChangeRows}
           rows={rows}

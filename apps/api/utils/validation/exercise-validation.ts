@@ -1,4 +1,4 @@
-import { Exercise } from "../../db/exercises.ts";
+import { Exercise } from "../../db/types.ts";
 
 export const getExerciseErrors = (body: Exercise): string[] => {
   const errors: string[] = [];

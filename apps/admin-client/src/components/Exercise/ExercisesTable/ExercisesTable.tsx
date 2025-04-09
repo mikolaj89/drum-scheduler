@@ -10,13 +10,20 @@ import { getExercisesColumns } from "./ExercisesTableHelper";
 import { Button, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { EditExerciseModal } from "../EditExerciseModal";
+import { ConfirmationDialog } from "@/components/Common/ConfirmationDialog";
 
 export const ExercisesTable = () => {
   const queryClient = useQueryClient();
   const [isMounted, setIsMounted] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingExerciseId, setEditingExerciseId] = useState<number | null>(null);
-  
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [editingExerciseId, setEditingExerciseId] = useState<number | null>(
+    null
+  );
+  const [deletedExerciseId, setDeletedExerciseId] = useState<number | null>(
+    null
+  );
+
   const { data: queryData, isFetching } = useQuery({
     queryKey: ["exercises"],
     queryFn: fetchExercises,
@@ -36,12 +43,21 @@ export const ExercisesTable = () => {
     },
   });
 
-  const onDelete = (id: number) => deleteMutation.mutate(id);
+  const onDeleteBtnClick = (id: number) => {
+    setDeletedExerciseId(id);
+    setIsConfirmModalOpen(true);
+  };
+
+  const onDeleteConfirm = () => {
+    deletedExerciseId && deleteMutation.mutate(deletedExerciseId);
+    setDeletedExerciseId(null);
+    setIsConfirmModalOpen(false);
+  };
 
   const onEditBtnClick = (id: number) => {
     setEditingExerciseId(id);
     setIsEditModalOpen(true);
-    
+
     // Optionally prefetch the data (still a good practice)
     queryClient.prefetchQuery({
       queryKey: ["exercise", id],
@@ -55,10 +71,10 @@ export const ExercisesTable = () => {
   };
 
   const columns = getExercisesColumns({
-    onDelete,
+    onDelete: onDeleteBtnClick,
     onEditBtnClick,
   });
-  
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -69,6 +85,13 @@ export const ExercisesTable = () => {
         exerciseId={editingExerciseId}
         isOpen={isEditModalOpen}
         onClose={handleModalClose}
+      />
+      <ConfirmationDialog
+        title="Delete Exercise"
+        message="Are you sure you want to delete this exercise? It will be remove from all sessions that contains it."
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={onDeleteConfirm}
       />
       {!isMounted ? (
         <Skeleton variant="rectangular" width="100%" height={400} />

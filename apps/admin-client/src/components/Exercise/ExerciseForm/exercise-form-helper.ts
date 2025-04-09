@@ -1,7 +1,6 @@
 import { SelectOption } from "@/components/Common/Field/Select";
-import { Category } from "../../../../../api/db/categories";
+import {Category, Exercise} from "../../../../../api/db/types";
 import { z } from "zod";
-import { Exercise } from "../../../../../api/db/exercises";
 import { fetchExercise } from "@/utils/exercises-api";
 import { useQuery } from "@tanstack/react-query";
 

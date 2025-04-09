@@ -23,11 +23,12 @@ import {
 
 const style = {
   position: "absolute",
+  display: "flex",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 600,
-
+  width: 400,
+  flexDirection: "column",
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -36,7 +37,7 @@ const style = {
 type EditExerciseModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  sessionId: string;
+  sessionId: number;
 };
 
 export const SelectExerciseModal = ({
@@ -58,7 +59,8 @@ export const SelectExerciseModal = ({
   const exerciseId = watch("exerciseId");
   const queryClient = useQueryClient();
 
-  const onSuccess = () => {
+  const onSuccess = (sessionId: number) => {
+    console.log('on success running')
     queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
 
     reset();
@@ -94,7 +96,8 @@ export const SelectExerciseModal = ({
         aria-labelledby="edit-modal-title"
         aria-describedby="edit-modal-description"
       >
-        <Box sx={{ ...style, minHeight: 500 }}>
+        <Box sx={{ ...style }}>
+          
           <Typography id="select-modal-title" variant="h1" component="h3">
             Select Exercise
           </Typography>
@@ -122,6 +125,7 @@ export const SelectExerciseModal = ({
               options={getExercisesOpts(categoryExercisesQuery?.data ?? [])}
             />
             <Button
+              size="large"
               type="submit"
               variant="contained"
               color="primary"
@@ -130,6 +134,7 @@ export const SelectExerciseModal = ({
               {isLoading ? <CircularProgress size={24} /> : "Save Exercise"}
             </Button>
           </form>
+          
         </Box>
       </Modal>
     </>

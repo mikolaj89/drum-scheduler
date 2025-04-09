@@ -3,9 +3,9 @@ import { SessionDetails } from "@/components/Session/SessionDetails";
 import { Box, Typography } from "@mui/material";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     sessionId: string;
-  };
+  }>;
 }
 
 export default async function Page({ params } : PageProps) {

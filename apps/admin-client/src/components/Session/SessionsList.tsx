@@ -1,7 +1,6 @@
 "use client";
 import { fetchSessions } from "@/utils/sessions-api";
 import { useQuery } from "@tanstack/react-query";
-import { Session } from "../../../../api/db/sessions";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import {
@@ -12,6 +11,7 @@ import {
   TableBody,
 } from "@mui/material";
 import { TableLink } from "../Common/Link";
+import { Session } from "../../../../api/db/types";
 
 export const SessionsList = ({ sessionsData }: { sessionsData: Session[] }) => {
   const { data } = useQuery({

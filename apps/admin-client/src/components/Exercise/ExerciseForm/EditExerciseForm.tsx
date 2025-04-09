@@ -148,6 +148,7 @@ export const EditExerciseForm = ({ handleClose, exerciseId }: ExerciseFormProps)
 
       <Button
         type="submit"
+         size="large"
         variant="contained"
         color="primary"
         disabled={editMutation.isPending}

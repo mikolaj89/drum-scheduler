@@ -1,6 +1,5 @@
-import { Exercise } from "../../../api/db/exercises";
-import { fetchData, postData } from "./request";
-import { Category } from "../../../api/db/categories";
+import { fetchData } from "./request";
+import { Category, Exercise } from "../../../api/db/types";
 import { ExerciseSubmitData } from "@/components/Exercise/ExerciseForm/exercise-form-helper";
 import { ApiClient } from "./api-client";
 import { ApiClient as ApiClientV2 } from "./api-client-v2";
@@ -9,7 +8,7 @@ import { ApiClient as ApiClientV2 } from "./api-client-v2";
 export const fetchCategories = async () => {
   const apiClient = new ApiClientV2("http://localhost:8000");
   const result = await apiClient.get<Category[]>("/categories");
-  if("error" in result) {
+  if ("error" in result) {
     throw new Error(result.error.message);
   }
   return result.data;
@@ -40,4 +39,3 @@ export const editExercise = async (data: ExerciseSubmitData, id: number) => {
   const apiClient = new ApiClient("http://localhost:8000");
   return apiClient.put<Exercise>(`/exercises/${id}`, data);
 };
-

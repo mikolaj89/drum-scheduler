@@ -19,7 +19,7 @@ export type SelectFieldProps = {
   required?: boolean;
   errors: FieldErrors;
   control: Control<any>; // Add control from useForm()
-  onSelect?: (val: string) => void
+  onSelect?: (val: string) => void;
 };
 
 export const SelectField = ({
@@ -33,7 +33,9 @@ export const SelectField = ({
 }: SelectFieldProps) => {
   return (
     <FormControl fullWidth error={!!errors[name]}>
-      <InputLabel sx={{backgroundColor: "white"}} id={`${label}-${name}`}>{label}</InputLabel>
+      <InputLabel sx={{ backgroundColor: "white" }} id={`${label}-${name}`}>
+        {label}
+      </InputLabel>
       <Controller
         name={name}
         control={control}
@@ -44,11 +46,11 @@ export const SelectField = ({
             required={required}
             labelId={`${label}-${name}`}
             id={name}
-            value={field.value || ""} 
+            value={field.value || ""}
             onChange={(event) => {
               field.onChange(event.target.value);
               onSelect(event.target.value);
-            } } 
+            }}
           >
             {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -59,7 +61,9 @@ export const SelectField = ({
         )}
       />
       {errors[name] && (
-        <FormHelperText error>{(errors[name] as FieldError).message}</FormHelperText>
+        <FormHelperText error>
+          {(errors[name] as FieldError).message}
+        </FormHelperText>
       )}
     </FormControl>
   );

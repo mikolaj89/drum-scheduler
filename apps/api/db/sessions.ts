@@ -1,9 +1,8 @@
 import { db } from "./drizzle.ts";
 import { sessionsSchema } from "./schema.ts";
 import { eq } from "drizzle-orm";
+import { SessionInput } from "./types.ts";
 
-export type Session = typeof sessionsSchema.$inferSelect;
-export type SessionInput = typeof sessionsSchema.$inferInsert;
 
 export async function getSession(id: number) {
   return await db

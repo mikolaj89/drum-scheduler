@@ -1,16 +1,17 @@
 import { db } from "./drizzle.ts";
 import { exercisesSchema } from "./schema.ts";
 import { eq } from "drizzle-orm";
-
-export type Exercise = typeof exercisesSchema.$inferSelect;
-export type ExerciseInput = typeof exercisesSchema.$inferInsert;
+import { ExerciseInput } from "./types.ts";
 
 export async function getExercises() {
   return await db.select().from(exercisesSchema);
 }
 
 export async function getExerciseById(id: number) {
-  return await db.select().from(exercisesSchema).where(eq(exercisesSchema.id, id));
+  return await db
+    .select()
+    .from(exercisesSchema)
+    .where(eq(exercisesSchema.id, id));
 }
 
 export const addExercise = async (exercise: ExerciseInput) => {

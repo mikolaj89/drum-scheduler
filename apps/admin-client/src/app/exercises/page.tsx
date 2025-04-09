@@ -7,8 +7,8 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { Exercise } from "../../../../api/db/exercises";
 import { CreateExercise } from "@/components/Exercise/CreateExercise";
+import { Exercise } from "../../../../api/db/types";
 
 export default async function ExercisesPage() {
   // Step 1: Create a new query client

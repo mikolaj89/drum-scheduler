@@ -1,6 +1,8 @@
-
-import { ApiResponse, ApiErrorResponse, ApiSuccessResponse } from "../../../api/utils/response";
-
+import {
+  ApiResponse,
+  ApiErrorResponse,
+  ApiSuccessResponse,
+} from "../../../api/utils/response";
 
 export class ApiClient {
   private baseUrl: string;
@@ -23,7 +25,7 @@ export class ApiClient {
     method: string,
     body?: unknown,
     customHeaders: Record<string, string> = {}
-  ): Promise<ApiResponse<T>> {
+  ): Promise<ApiResponse<T | null>> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method,
@@ -31,13 +33,29 @@ export class ApiClient {
         body: body ? JSON.stringify(body) : undefined,
       });
 
-      const responseData = await response.json();
+      let responseData: ApiResponse<T> | null  = null;
 
-      if (!response.ok) {
-        return responseData as ApiErrorResponse;
+      try {
+        responseData = await response.json();
+      } catch (error) {
+        console.warn("Unable to parse JSON response:", error);
+        if (!response.ok) {
+          return {
+            error: {
+              message: "Request failed, but response is not JSON. Check server logs or network tab.",
+              errorCode: "PARSE_ERROR",
+            },
+          };
+        }
+        // If the response is empty but the request was successful, return null data
+        // This is a common case for DELETE requests or endpoints that return no content.
+        return {
+          data: null,
+        };
       }
 
-      return responseData as ApiSuccessResponse<T>;
+      return responseData!;
+    
     } catch (error) {
       return {
         error: {
