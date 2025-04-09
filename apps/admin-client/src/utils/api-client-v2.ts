@@ -89,6 +89,14 @@ export class ApiClient {
     return this.request<T>(endpoint, "PUT", body, headers);
   }
 
+  patch<T>(
+    endpoint: string,
+    body: any,
+    headers: Record<string, string> = {}
+  ): Promise<ApiResponse<T | null>> {
+    return this.request<T>(endpoint, "PATCH", body, headers);
+  }
+
   delete<T>(
     endpoint: string,
     headers: Record<string, string> = {}

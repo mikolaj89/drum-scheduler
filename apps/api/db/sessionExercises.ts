@@ -50,25 +50,6 @@ export async function getSessionExercises(sessionId: number) {
     .orderBy(sessionexercisesSchema.orderIndex); // 👈 here!
 }
 
-// export async function reorderSessionExercises(
-//   sessionId: number,
-//   exercises: Exercise[]
-// ) {
-//   const updates = exercises.map((exercise, index) => {
-//     return db
-//       .update(sessionexercisesSchema)
-//       .set({ orderIndex: index })
-//       .where(
-//         and(
-//           eq(sessionexercisesSchema.sessionId, sessionId),
-//           eq(sessionexercisesSchema.exerciseId, exercise.id)
-//         )
-//       );
-//   });
-
-//   return await Promise.all(updates);
-// }
-
 export const addSessionExercise = async (
   sessionExercise: SessionExerciseInput
 ) => {

@@ -1,7 +1,11 @@
 "use client";
-import { fetchSession, removeExerciseFromSession } from "@/utils/sessions-api";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import {
+  fetchSession,
+  removeExerciseFromSession,
+  reorderSessionExercises,
+} from "@/utils/sessions-api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button, Paper } from "@mui/material";
 import { SessionWithExercises } from "../../../../api/utils/session";
 import ExercisesTable from "../Exercise/ExercisesTable/SessionExercisesTable";
 import { useCallback, useEffect, useState } from "react";
@@ -10,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Divider from "@mui/material/Divider";
 import { SelectExerciseModal } from "./AddExerciseToSessionModal/AddExerciseToSessionModal";
 import { Exercise } from "../../../../api/db/types";
+import { ButtonsWrapper, TableButtonsWrapper } from "../Common/Container";
 
 export const SessionDetails = ({
   sessionData,
@@ -17,7 +22,9 @@ export const SessionDetails = ({
   sessionData: SessionWithExercises;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [isOrderChanged, setIsOrderChanged] = useState(false);
+  const queryClient = useQueryClient();
+
   const {
     data: { data },
     isFetching,
@@ -26,6 +33,30 @@ export const SessionDetails = ({
     queryFn: ({ queryKey }) => fetchSession(queryKey[1].toString()),
     initialData: { data: sessionData },
     refetchOnMount: false,
+  });
+
+  const reorderMutation = useMutation({
+    mutationKey: ["reorderSessionExercises"],
+    mutationFn: async ({
+      sessionId,
+      exercises,
+    }: {
+      sessionId: number;
+      exercises: Exercise[];
+    }) => {
+      const result = await reorderSessionExercises(sessionId, {
+        exercises,
+      });
+      if ("error" in result) {
+        throw new Error(result.error.message);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["session", sessionData.id],
+      });
+      setIsOrderChanged(false);
+    },
   });
 
   const { mutate, isPending } = useMutation({
@@ -48,6 +79,7 @@ export const SessionDetails = ({
   const handleChangeRows = useCallback(
     (rows: Exercise[]) => {
       setRows(rows);
+      setIsOrderChanged(true);
     },
     [setRows]
   );
@@ -58,9 +90,13 @@ export const SessionDetails = ({
     }
   }, [data?.exercises]);
 
-  // useEffect(( => {
-  //   // update re-ordered rows here
-  // }, [rows]);
+  const onSaveOrder = () => {
+    reorderMutation.mutate({
+      sessionId: sessionData.id,
+      exercises: rows,
+    });
+    
+  };
 
   const onDelete = (exerciseId: number) => {
     mutate({
@@ -75,6 +111,8 @@ export const SessionDetails = ({
     onEditBtnClick: onDelete,
   });
 
+  const isTableLoading = reorderMutation.isPending || isFetching || isPending;
+
   return (
     <>
       {/* consider adding a total duration once i figure out how to sum it up with mp3 length. Otherwise it doesn't make sense  */}
@@ -87,7 +125,7 @@ export const SessionDetails = ({
         onClose={() => setIsModalOpen(false)}
       />
       <Divider />
-      <Box sx={{ paddingY: 2 }}>
+      <TableButtonsWrapper>
         <Button
           variant="contained"
           color="primary"
@@ -98,10 +136,32 @@ export const SessionDetails = ({
         >
           Add exercise
         </Button>
-      </Box>
+        <ButtonsWrapper>
+          <Button
+            disabled={!isOrderChanged}
+            variant="outlined"
+            color="primary"
+            type="button"
+            size="medium"
+            onClick={onSaveOrder}
+          >
+            Save order
+          </Button>
+          {/* reset button as followup - better for UX */}
+          {/* <Button
+            variant="outlined"
+            color="error"
+            type="button"
+            size="medium"
+            onClick={() => setIsModalOpen(true)}
+          >
+            Reset
+          </Button> */}
+        </ButtonsWrapper>
+      </TableButtonsWrapper>
       <Paper>
         <ExercisesTable
-          isLoading={isFetching || isPending}
+          isLoading={isTableLoading}
           draggable={true}
           onChange={handleChangeRows}
           rows={rows}
