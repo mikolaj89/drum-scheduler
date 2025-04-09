@@ -2,12 +2,12 @@ import { Router } from "@oak/oak";
 import {
   addExercise,
   editExercise,
-  Exercise,
   getExercises,
   deleteExercise,
   getExerciseById,
 } from "../db/exercises.ts";
 import { getExerciseErrors } from "../utils/validation/exercise-validation.ts";
+import { Exercise } from "../db/types.ts";
 
 const router = new Router();
 

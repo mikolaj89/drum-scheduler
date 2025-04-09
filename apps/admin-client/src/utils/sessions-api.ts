@@ -17,6 +17,11 @@ export const createSession = async (session: SessionFormData) => {
   return await apiClient.post<CreateSessionResponse>("/sessions", session);
 };
 
+export const deleteSession = async (id: number) => {
+  const apiClient = new ApiClientV2("http://localhost:8000");
+  return await apiClient.delete<null>(`/sessions/${id}`);
+}
+
 export const reorderSessionExercises = async (
   sessionId: number,
   exercises: SessionExercisesOrderInput
