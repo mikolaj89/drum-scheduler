@@ -1,3 +1,4 @@
+import { Context } from "@oak/oak/context";
 import { addSession } from "../../db/sessions.ts";
 import { SessionInput } from "../../db/types.ts";
 import {
@@ -9,7 +10,7 @@ export type CreateSessionResponse = { id: number };
 
 type ApiResponse = ApiSuccessResponse<CreateSessionResponse>;
 
-export const createSession = async (context) => {
+export const createSession = async (context : Context) => {
   const { request, response } = context;
   try {
     const { name, notes } = (await request.body.json()) as SessionInput;

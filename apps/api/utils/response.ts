@@ -1,3 +1,6 @@
+import { Context } from "@oak/oak/context";
+import { Response } from "@oak/oak";
+
 export type ErrorCode =
   | "BAD_REQUEST"
   | "UNAUTHORIZED"
@@ -23,6 +26,12 @@ export interface ApiErrorResponse {
 
 // These would never appear together in one response
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+export type ContextExtended<T> = Context & {
+  response: Response & {
+    body: ApiResponse<T>;
+  };
+};
 
 export const getFormattedErrorBody = (
   message: string,

@@ -40,7 +40,7 @@ export const CreateSession = () => {
           <Typography id="modal-modal-title" variant="h1" component="h3">
             Create new session
           </Typography>
-          <SessionForm closeModal={handleClose} />
+          <SessionForm />
         </Box>
       </Modal>
     </>

@@ -2,27 +2,17 @@ import { Router } from "@oak/oak";
 import {
   addExercise,
   editExercise,
-  getExercises,
   deleteExercise,
   getExerciseById,
 } from "../db/exercises.ts";
 import { getExerciseErrors } from "../utils/validation/exercise-validation.ts";
-import { Exercise } from "../db/types.ts";
+import { getExercises } from "./exercises/getExercises.ts";
 
 const router = new Router();
 
 router
   // Fetch all exercises
-  .get("/exercises", async (context) => {
-    try {
-      const result: Exercise[] = await getExercises();
-      context.response.body = { data: result };
-    } catch (error) {
-      console.error("Error fetching exercises:", error);
-      context.response.status = 500;
-      context.response.body = { error: "Failed to fetch exercises" };
-    }
-  })
+  .get("/exercises", getExercises)
   // fetch a single exercise
   .get("/exercises/:id", async (context) => {
     try {
