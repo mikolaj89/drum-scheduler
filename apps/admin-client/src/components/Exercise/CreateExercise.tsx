@@ -3,6 +3,7 @@
 import { Modal, Box, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import { ExerciseForm } from "./ExerciseForm/ExerciseForm";
+import { ButtonsWrapper, TableButtonsWrapper } from "../Common/Container";
 
 const style = {
   position: "absolute",
@@ -21,7 +22,12 @@ export const CreateExercise = () => {
 
   return (
     <>
-      <Button sx={{marginBottom: 2}} type="button" variant="contained"  onClick={() => setIsOpen(true)}>
+      <Button
+        size="large"
+        type="button"
+        variant="contained"
+        onClick={() => setIsOpen(true)}
+      >
         Create Exercise
       </Button>
       <Modal
@@ -34,8 +40,7 @@ export const CreateExercise = () => {
           <Typography id="modal-modal-title" variant="h1" component="h3">
             Create new drum exercise
           </Typography>
-         <ExerciseForm />
-
+          <ExerciseForm />
         </Box>
       </Modal>
     </>

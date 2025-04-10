@@ -11,6 +11,7 @@ import { Button, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import { EditExerciseModal } from "../EditExerciseModal";
 import { ConfirmationDialog } from "@/components/Common/ConfirmationDialog";
+import { useSearchParams } from "next/navigation";
 
 export const ExercisesTable = () => {
   const queryClient = useQueryClient();
@@ -24,9 +25,13 @@ export const ExercisesTable = () => {
     null
   );
 
+  const searchParams = useSearchParams();
+  const name = searchParams.get("name") || "";
+  const categoryId = searchParams.get("categoryId") || "";
+
   const { data: queryData, isFetching } = useQuery({
-    queryKey: ["exercises"],
-    queryFn: fetchExercises,
+    queryKey: ["exercises", name, categoryId],
+    queryFn: () => fetchExercises({ name, categoryId }),
     refetchOnMount: false,
   });
   const { data } = queryData ?? {};

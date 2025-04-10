@@ -22,8 +22,23 @@ export const fetchCategoryExercises = async (id: string) => {
 export const fetchExercise = async (id: number) =>
   await fetchData<Exercise>(`/exercises/${id}`);
 
-export const fetchExercises = async () =>
-  await fetchData<Exercise[]>("/exercises");
+export const fetchExercises = async ({
+  name,
+  categoryId,
+}: {
+  name: string | null;
+  categoryId: string | null;
+}) => {
+  const params = new URLSearchParams();
+  if (name) {
+    params.set("name", name);
+  }
+  if (categoryId) {
+    params.set("categoryId", categoryId);
+  }
+  const paramsString = `?${params.toString()}`;
+  return await fetchData<Exercise[]>(`/exercises${paramsString}`);
+};
 
 export const createExercise = async (data: ExerciseSubmitData) => {
   const apiClient = new ApiClient("http://localhost:8000");

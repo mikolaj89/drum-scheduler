@@ -2,8 +2,11 @@ import {
   FormControl,
   FormHelperText,
   InputLabel,
+  InputLabelPropsSizeOverrides,
   MenuItem,
   Select,
+  SxProps,
+  Theme,
 } from "@mui/material";
 import { Controller, FieldErrors, Control, FieldError } from "react-hook-form";
 
@@ -20,6 +23,8 @@ export type SelectFieldProps = {
   errors: FieldErrors;
   control: Control<any>; // Add control from useForm()
   onSelect?: (val: string) => void;
+  size?: "small" | "medium"  ;
+  sx?: SxProps<Theme>;
 };
 
 export const SelectField = ({
@@ -30,10 +35,12 @@ export const SelectField = ({
   control,
   required = false,
   onSelect = () => {},
+  size = "medium",
+  sx
 }: SelectFieldProps) => {
   return (
-    <FormControl fullWidth error={!!errors[name]}>
-      <InputLabel sx={{ backgroundColor: "white" }} id={`${label}-${name}`}>
+    <FormControl error={!!errors[name]}>
+      <InputLabel size={size === "small" ? "small" : "normal"} sx={{ backgroundColor: "white" }} id={`${label}-${name}`}>
         {label}
       </InputLabel>
       <Controller
@@ -42,7 +49,9 @@ export const SelectField = ({
         defaultValue=""
         render={({ field }) => (
           <Select
+          sx={{ minWidth: 300, ...sx }}
             {...field}
+            size={size}
             required={required}
             labelId={`${label}-${name}`}
             id={name}

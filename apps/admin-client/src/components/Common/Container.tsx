@@ -10,5 +10,5 @@ export const TableButtonsWrapper = ({ children }: PropsWithChildren) => {
 };
 
 export const ButtonsWrapper = ({ children }: PropsWithChildren) => {
-  return <Box sx={{ display: "flex", gap: 1 }}>{children}</Box>;
+  return <Box sx={{ display: "flex", gap: 1, alignItems: "stretch" }}>{children}</Box>;
 };
