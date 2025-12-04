@@ -62,7 +62,7 @@ router
     } catch (error) {
       context.response.status = 500;
       context.response.body = {
-        error: `Failed to add exercise: ${error.toString()}`,
+        error: `Failed to add exercise: ${String(error)}`,
       };
     }
   })
@@ -95,7 +95,7 @@ router
       console.error("Error updating exercise:", error);
       context.response.status = 500;
       context.response.body = {
-        error: `Failed to update exercise : ${error.toString()} `,
+        error: `Failed to update exercise : ${String(error)} `,
       };
     }
   })
@@ -115,7 +115,7 @@ router
       console.error("Error deleting exercise:", error);
       context.response.status = 500;
       context.response.body = {
-        error: `Failed to delete exercise ${error.toString()}`,
+        error: `Failed to delete exercise ${String(error)}`,
       };
     }
   });
